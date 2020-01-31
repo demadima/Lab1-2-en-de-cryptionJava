@@ -1,0 +1,10 @@
+
+char sh = 'r';
+int x = 'h';
+boolean b = x == sh;
+b
+(boolean) false
+
+
+
+1+1(int) 2
