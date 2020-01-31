@@ -1,0 +1,208 @@
+2	ЛАБОРАТОРНАЯ РАБОТА № 2
+
+ИССЛЕДОВАНИЕ ШИФРОВ ПРОСТОЙ ЗАМЕНЫ
+2.1    Цель работы
+Ознакомиться с различными шифрами простой замены (шифрами подстановки) и методами их дешифрования.
+2.2    Теоретические сведения
+При шифровании заменой (подстановкой) символы шиф¬руемого текста заменяются символами того же или другого алфа¬вита с заранее установленным правилом замены. В шифре про¬стой замены каждый символ исходного текста заменяется симво¬лами того же алфавита одинаково на всем протяжении текста. Часто шифры простой замены называют шифрами одноалфавитной подстановки.
+
+В системе шифрования Цезаря использовались только ад¬дитивные свойства множества целых Zm. Однако символы мно¬жества Zm можно также умножать по модулю m. Применяя одно¬временно операции сложения и умножения по модулю m над эле¬ментами множества Zm, можно получить систему подстановок, которую называют аффинной системой подстановок Цезаря.
+
+Ea,b(t) = at + b (mod m),
+
+где a,b - целые числа, 0 < a,b < m,   НОД (a,m) = 1.
+
+Следует заметить, что преобразование Eab(t) является взаимно однозначным отображением на множестве Zm только в том случае, если наибольший общий делитель чисел а и m,  (НОД (а, m)), равен единице, т.е. а и m должны быть взаимно простыми числами.
+Например, пусть m = 26, а = 3, b = 5. Тогда, очевидно, НОД (3,26) = 1, и мы получаем следующее соответствие между числовыми кодами букв:
+
+Таблица 2.2.2 – Соответствия между числовыми кодами букв
+
+t	0	1	2	3	4	5	6	7	8	9	10	11	12
+3t + 5	5	8	11	14	17	20	23	0	3	6	9	12	15
+
+t	13	14	15	16	17	18	19	20	21	22	23	24	25
+3t + 5	18	21	24	1	4	7	10	13	16	19	22	25	2
+
+
+Преобразуя числа в буквы английского языка, получаем следующее соответствие для букв открытого текста и шифротекста:
+
+Таблица 2.2.3 – Соотвествие для букв открытого текста и шифротекста
+
+A	B	C	D	E	F	G	H	I	J	K	L	M	N	O	Q	P	R	S	T	U	V	W	X	Y	Z
+F	I	L	O	R	U	X	A	D	G	J	M	P	S	V	Y	B	E	H	K	N	Q	T	W	Z	C
+
+Исходное сообщение   NIGHT    преобразуется 
+в шифротекст   SDXAK
+
+Достоинством аффинной системы является удобное управление ключами - ключи шифрования и расшифрования представляются в компактной форме в виде пары чисел (а, b). 
+Недостатки аффинной системы аналогичны недостаткам системы шифрования Цезаря.
+Аффинная система использовалась на практике несколько веков назад, а сегодня ее применение ограничивается большей частью иллюстрациями основных криптологических положений.
+
+
+2.3    Описание программы
+
+Программа шифрует произвольный текст (любого размера) аффиннской системой подстановки  Цезаря, т.е. (аt + b) mod m (При этом бригады договариваются об одинаковых переменных a и b). Шифротекст передается другой бригаде, которая дешифруемт текст
+
+2.4   Выполнение работы
+         2.4.1 Класс encryption
+package lab2;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+public class encryption {
+
+	public int temp = 0;
+	public int m = 34;
+
+	public char[] keyColnArray = null;
+	public char[] keyRowArray = null;
+
+	public int[] IDlistColn = new int[5];
+	public int[] IDlistRow = new int[5];
+	public List<Character> text = new ArrayList<>();
+	// Текст для проверки: ПриветМаксимКакТебяЗовут?
+	public static char[] alfavit = { 'а', 'б', 'в', 'г', 'д', 'е', 'ё', 'ж', 'з', 'и', 'й', 'к', 'л', 'м', 'н', 'о',
+			'п', 'р', 'с', 'т', 'у', 'ф', 'х', 'ц', 'ч', 'ш', 'щ', 'ъ', 'ы', 'ь', 'э', 'ю', 'я', ' ' };
+
+	public char[] array = null;
+
+	public int[] alfavitNew = new int[34];
+
+	public String Encrypt(String str, int a, int b) {
+		// Ваше предложение
+		System.out.println("");
+		array = str.toCharArray();
+
+		System.out.println(Arrays.toString(array));
+
+		System.out.print("Старый алфавит:");
+		for (int t = 0; t < alfavit.length; t++) {
+			System.out.print(t + "  ");
+		}
+		System.out.println("");
+		System.out.print("Новый алфавит:");
+		for (int t = 0; t < alfavit.length; t++) {
+			alfavitNew[t] = (a * t + b) % m;
+			System.out.print(alfavitNew[t] + "  ");
+		}
+
+		for (int i = 0; i < array.length; i++) {
+			for (int t = 0; t < alfavit.length; t++) {
+				if (array[i] == alfavit[t]) {
+					temp = alfavitNew[t];
+					text.add(alfavit[temp]);
+				}
+			}
+		}
+
+		String encrypted = "";
+		System.out.println("");
+		System.out.println("Выводим зашифрованный текст: ");
+		for (int i = 0; i < text.size(); i++) {
+			encrypted += text.get(i);
+		}
+		return encrypted;
+	}
+}
+
+    2.4.2 Класс decryption
+package lab2;
+public class decryption {	
+    private static String alphabet = "абвгдеёжзийклмнопрстуфхцчшщъыьэюя ";
+    public static String Decrypt(String text, int a, int b) {
+    	int m = 34;
+        int x;
+        int inv = Inverse(a, m);
+        text = text.toLowerCase();
+        String result = "";
+       
+        for (int i = 0; i < text.length(); i++) {
+            int pos = alphabet.indexOf(text.charAt(i));
+
+            if (pos < 0) {
+                result += text.charAt(i);
+            } else {
+                x = (inv * (pos + m - b)) % m;
+                result+=alphabet.charAt(x);
+            }
+        }
+        return result;
+    }
+
+    private static int Inverse(int a, int m) {
+        for (int i = 1; i < m; i++) {
+            if ((a * i) % m == 1) {
+                return i;
+            }
+        }
+        return 1;
+    }
+}
+    2.4.3 Класс main
+package lab2;
+
+import java.awt.BufferCapabilities;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
+
+public class main {	
+	public static void main(String[] args) {
+		System.out.println("1 - шифруем ; 2 - дешифруем");
+		Scanner scan = new Scanner(System.in);
+		Integer n = scan.nextInt();
+		
+		System.out.println("Введите a:");
+		Scanner scan2 = new Scanner(System.in);
+		Integer a = scan2.nextInt();
+		System.out.println("Введите b:");
+		Scanner scan3 = new Scanner(System.in);
+		Integer b = scan3.nextInt();
+	
+		encryption E = new encryption();
+		decryption D = new decryption();
+		System.out.println("1)Введите текст");
+		BufferedReader str = new BufferedReader(new InputStreamReader(System.in));
+	
+		switch(n) {
+	    case 1: 
+	    	try {
+	    		System.out.println(E.Encrypt(str.readLine(),a,b));
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			break;
+		case 2: 
+			try {
+				System.out.println(D.Decrypt(str.readLine(), a, b));
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} 
+			break;		
+		default: 
+		    System.out.println("Не правельный ввод");;
+		    break;
+	}
+	}
+	
+}
+ 
+Рисунок 1.1 – Шифрование
+
+ 
+
+Рисунок 1.2 – Дешифрование
+
+2.5    Выводы
+В данной лабораторной работе мы ознакомились с различными шифрами простой замены (шифрами подстановки) и методами их дешифрования.
+
+
+
+
